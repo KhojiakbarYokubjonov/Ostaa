@@ -1,0 +1,23 @@
+/**
+author: Khojiakbar Yokubjonov
+ *  date: 3/26/2023
+ *  description: this file adds a few CSS style rules to the web page of 
+    an online-marketplace app called Ostaa.
+*/
+body{
+    margin-left:1%;
+    
+}
+
+input, label {
+    margin-bottom: 1%;
+    display: inline-block;
+    
+}
+#add-item label{
+    width:40px;
+}
+
+#add-user label{
+    width:70px;
+}
