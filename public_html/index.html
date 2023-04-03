@@ -14,45 +14,26 @@
     <title>Ostaa</title>
 </head>
 <body>
-    <div id="add-user">
-        <h1>Add User</h1>
-        <form >
+    <h1>Ostaa</h1>
+    <div id="user-login">
+        <h1>Login</h1>
             <label for="username">Username</label>
             <input type="text" id="username" required> <br>
             <label for="password">Password</label>
-            <input type="text" id="password" required> <br>
-            <button type="submit" onclick="addUser()">Add User</button>
-        </form>
+            <input type="password" id="password" required> <br>
+            <button type="submit" onclick="login()">Login</button>
+            <div id="login-res"></div>
         
     </div>
 
-    <div id="add-item">
-        <h1>Add Item</h1>
-        <form>
-            <label for="title">Title</label>
-            <input type="text" id="title" required> <br>
-            <label for="desc">Desc</label>
-            <input type="text" id="desc" required> <br>
-
-            <label for="image">Image</label>
-            <input type="text" id="image" required> <br>
-
-            <label for="price">Price</label>
-            <input type="number" id="price" required> <br>
-
-            <label for="status">Status</label>
-            <input type="text" id="status" required><br>
-
-            <label for="user">User</label>
-            <input type="text" name="user" id="user" required> <br>
-
-            <button type="submit" onclick="addItem()">Add Item</button>
-        </form>
-        
-
-        
-
-
+    <div id="create-account">
+        <h1>Create Account</h1>
+            <label for="new-username">Username</label>
+            <input type="text" id="new-username" required> <br>
+            <label for="new-password">Password</label>
+            <input type="password" id="new-password" required> <br>
+            <button type="submit" onclick="addUser()">Create Account</button>
+            <div id="new-accoun-issue"></div>
     </div>
     
 

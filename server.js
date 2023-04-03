@@ -96,6 +96,21 @@ app.get('/get/items/', (req, res) => {
 
 });
 
+// authenticates the user login 
+app.get('/account/login/:USERNAME/:PASSWORD', (req, res) => {
+  console.log("validating login");
+  let u = req.params.USERNAME;
+  let p = req.params.PASSWORD;
+  let p1 = User.find({username: u, password:p}).exec();
+  p1.then((results => {
+    if(results.length >0){
+      res.end('SUCCESS');
+    }else{
+      res.end('LOGIN FAILED');
+    }
+  }))
+});
+
 // (GET) Should return a JSON array containing every listing (item)for the user USERNAME.
 app.get('/get/listings/:USERNAME', (req, res) => {
     console.log("Sending listings for a username");
@@ -169,19 +184,37 @@ app.get('/search/items/:KEYWORD', (req, res) => {
 
 //  (POST) Should add a user to the database. The username and password should be sent as POST parameter(s).
 app.post('/add/user/', (req, res) => {
-    console.log("Saving a new user")
-    let newUserToSave = req.body;
-    console.log(req.url);
-    console.log(req.body);
-    var newUser = new User(newUserToSave);
+  console.log("Saving a new user")
+  let newUserToSave = req.body;
+  console.log(req.url);
+  console.log(req.body);
+  let userData = null;
+  try{
+    userData = JSON.parse(newUserToSave);
+  }catch (e){
+    userData = newUserToSave;
+  }
+  
+  let p3 = User.find({username: userData.username, password: userData.password}).exec();
+p3.then((results) => {
+  console.log(results);
+  if(results.length ==0){
+    let newUser = new User(newUserToSave);
     let p1 = newUser.save();
     p1.then( (doc) => { 
-        res.end('SAVED SUCCESFULLY');
+      res.end('SAVED SUCCESFULLY');
     });
     p1.catch( (err) => { 
-        console.log(err);
-        res.end('FAIL');
+      console.log(err);
+      res.end('FAIL');
     });
+  }else{
+    res.end("Invalid credentials");
+  }
+})
+  
+  
+  
 
 })
 

@@ -5,19 +5,66 @@ author: Khojiakbar Yokubjonov
     an online-marketplace app called Ostaa.
 */
 body{
-    margin-left:1%;
+    margin: 0;
+    margin-left:2%;
+    margin-top: 2%;
+    background-color: rgb(145, 203, 239);
+    font-family: "Questrial", "Arial", sans-serif;
     
+}
+h1 {
+    color: blue;
+    margin:10px;
+    margin-left:0;
+    margin-top: 5px;
 }
 
 input, label {
     margin-bottom: 1%;
     display: inline-block;
+    border-radius: 7px;
+    border-color: white;
+    font-size: 17px;
+    margin:4px 0px 4px 0px;
     
 }
-#add-item label{
-    width:40px;
+input[type=text]:focus{
+    outline: 2px solid #2596be;
+}
+label{
+    width:90px;
 }
 
-#add-user label{
-    width:70px;
+#user-login {
+    margin-bottom: 4%;
 }
+
+
+button{
+    border-radius: 7px;
+    background-color: #2596be;
+    color: white;
+    padding: 7px 15px;
+    border-color:  #2596be;
+    margin-top: 10px;
+}
+
+button:hover{
+    background-color: #a8d5e5;
+    border-color: #a8d5e5;
+}
+
+#user-login, #create-account {
+    border: 2px solid #2596be;
+    width: max-content;
+    padding: 10px 20px;
+    border-radius: 10px;
+    margin-top:30px;
+}
+
+#login-res, #new-accoun-issue{
+    color:red; 
+    margin-top:15px;
+    font-weight: bold;
+}
+
