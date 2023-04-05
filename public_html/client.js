@@ -15,18 +15,17 @@ const port = 3000;
  * Empty inputs are not allowed.
  */
 
-
 //  CHANGE THIS FUNCTION TO LOGIN
-
+var userName;
 function login(){
     displayLoginIssue(null);
     const xhr = new XMLHttpRequest();
     let url = 'http://' + hostname + ':' + port + '/account/login/'
-    let u = document.getElementById('username').value;
+    userName = document.getElementById('username').value;
     let ps = document.getElementById('password').value;
-    console.log(u + " " +  ps);
-    if(u !=="" && ps !== ""){
-         url += u + '/' + ps + '/';
+    console.log(userName + " " +  ps);
+    if(userName !=="" && ps !== ""){
+         url += userName + '/' + ps + '/';
         xhr.open('GET', url);
         xhr.send();
         xhr.onreadystatechange = function() {
@@ -34,10 +33,13 @@ function login(){
             if( xhr.status == 200){
                 // console.log('Inside client: '+ xhr.responseText);
                 if(xhr.responseText === "LOGIN FAILED"){
+
                     displayLoginIssue("Issue logging  in with that info");
                 }else{
                     console.log("SUCCESS");
-                    window.location.href = 'http://localhost:3000/home.html';
+                    window.location.href = 'http://localhost:3000/home.html'  ;
+                    
+                    
                 }
             }else{
                 console.log('smth went wrong');
@@ -47,6 +49,20 @@ function login(){
     };
         
     }
+}
+
+function updateWelcomeName(){
+    
+    document.getElementById('user-name-for-welcome').innerText = getCookieData().username;
+
+}
+
+function getCookieData()
+{
+    const cookieString = document.cookie;
+    const decodedCookieValue = decodeURIComponent(cookieString.split('=')[1]);
+    const cookieObj = JSON.parse(decodedCookieValue.replace('j:', ''));
+    return cookieObj;
 }
 
 function createAccount(){
@@ -125,13 +141,17 @@ function addUser(){
 
 // CHANGE TO CREATE ACCOUNT
 function addItem(){
+    console.log('adding a new item');
     let t  = document.getElementById("title").value;
-    let d = document.getElementById('desc').value;
-    let img = document.getElementById('image').value;
+    let d = document.getElementById('description').value;
+    let img = document.getElementById('file').value;
     let p = document.getElementById('price').value;
     let s = document.getElementById('status').value;
-    let user = document.getElementById('user').value;
+    var user = getCookieData().username;
+
+    // let user = document.getElementById('user').value;
     if(user !== "" && t !== "" && d !== "" && s !== "" ){
+
         let url = '/add/item/' + user;
         let item = {title: t, description: d, image: img, price: p, stat: s};
         let p1 = fetch((url), {
@@ -143,6 +163,7 @@ function addItem(){
         p1.then((response) => {
             console.log(response);
             console.log(response.text);
+            window.location.href = 'http://localhost:3000/home.html';
         });
         p1.catch(() => { 
             alert('something went wrong');
@@ -150,4 +171,154 @@ function addItem(){
     }
     
 
+}
+
+function searchListing(){
+    let s = document.getElementById('search').value;
+    console.log(s);
+    let url = '/search/items/' + s;
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', url);
+    xhr.send();
+    xhr.onreadystatechange = function() {
+    if (xhr.readyState === XMLHttpRequest.DONE) {
+        if( xhr.status == 200){
+            console.log(xhr.responseText);
+            let items = JSON.parse(xhr.responseText);
+            document.getElementById('output-area').innerHTML = '';
+            const outputArea = document.getElementById('output-area');
+            outputArea.classList.add("container");
+            items.forEach(item => {
+                const div = document.createElement('div');
+                div.classList.add("item");
+                if(item.stat.toLowerCase() === 'sale'){
+                    div.innerHTML = `
+                    <h3>${item.title}</h3>
+                    <p>${item.description}</p>
+                    <img id='itemImage' name='image'>
+                    <p>$${item.price}</p>
+                    <button id='buy-button' name='buyButton'>Buy Now!</button>
+                    `;
+                    // adds onclick function
+                    const buyB = div.querySelector('button[name="buyButton"]');
+                    buyB.addEventListener('click', function(){
+                        this.remove(); 
+                        buyItem(item);
+                    })
+
+                    const image = div.querySelector('img[name="image"]');
+                    image.addEventListener('onchange', function(){
+                        var fReader = new FileReader();
+                        fReader.readAsDataURL(item.image);
+                        fReader.onloadend = function(event){
+
+                            image.src = event.target.result;
+}
+                    })
+                }else{
+                    div.innerHTML = `
+                    <h3>${item.title}</h3>
+                    <p>${item.description}</p>
+                    <img src = "${item.image}">
+                    <p>$${item.price}</p>
+                    <p>Sold</p>
+                    `;
+                }
+                
+                outputArea.appendChild(div);
+            });
+        }
+        
+    }
+};
+}
+
+
+function buyItem(item){
+    let cookieObj = getCookieData();
+    let user = cookieObj.username;
+    console.log(user+' buying an item');
+    let url = '/purchase/item/' + user
+    let p = fetch( url, {
+        method: 'POST',
+        body: JSON.stringify(item),
+        headers: {"Content-Type": "application/json"}
+    });
+
+    p.then((response) => {
+
+        console.log(response);
+    });
+}
+
+function displayPurchases(){
+    // document.getElementById('purchases').style.color = 'black';
+    // document.getElementById('listings').style.color = 'white';
+    // document.getElementById('new-listings').style.color = 'white';
+    let cookieObj = getCookieData()
+    let url = '/get/purchases-data/'+ cookieObj.username;
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', url);
+    xhr.send();
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+            if( xhr.status == 200){
+                let items = JSON.parse(xhr.responseText);
+                document.getElementById('output-area').innerHTML = '';
+                const outputArea = document.getElementById('output-area');
+                outputArea.classList.add("container");
+                items.forEach(item => {
+                    const div = document.createElement('div');
+                    div.classList.add("item");
+                    div.innerHTML = `
+                    <h3>${item.title}</h3>
+                    <p>${item.description}</p>
+                    <img src = "${item.image}">
+                    <p>$${item.price}</p>
+                    <p>Sold</p>
+                    `;
+                   
+                    outputArea.appendChild(div);
+                });
+
+            }
+        }
+    }
+}
+
+function displayListings(){
+    let cookieObj = getCookieData()
+    let url = '/get/listings-data/'+ cookieObj.username;
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', url);
+    xhr.send();
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+            if( xhr.status == 200){
+                let items = JSON.parse(xhr.responseText);
+                document.getElementById('output-area').innerHTML = '';
+                const outputArea = document.getElementById('output-area');
+                outputArea.classList.add("container");
+                items.forEach(item => {
+                    const div = document.createElement('div');
+                    div.classList.add("item");
+                    div.innerHTML = `
+                    <h3>${item.title}</h3>
+                    <p>${item.description}</p>
+                    <img src = "${item.image}">
+                    <p>$${item.price}</p>
+                    <p>${item.stat}</p>
+                    `;
+                   
+                    outputArea.appendChild(div);
+                });
+
+            }
+        }
+    }
+
+}
+
+function createListing(){
+    window.location.href = 'http://localhost:3000/new_listing.html' 
 }

@@ -1,0 +1,123 @@
+body{
+    margin:0;
+    font-family: "Questrial", "Arial", sans-serif;
+}
+
+#header{
+    /* width: 100%; */
+    background: rgb(16, 104, 158);
+    margin:0;
+    color:white;
+    padding: 2% 0 2% 2%;
+}
+#welcome{
+    color:white;
+    padding:3px 0 3px 10px;
+    text-align: center;
+    font-size: 27px;
+}
+
+#resources{
+    width:100%;
+    background: rgb(16, 104, 158);
+    /* height:70px; */
+    position:relative;
+    /* margin:0; */
+}
+
+#search-bar{
+    text-align: center;
+    /* position:absolute; */
+}
+
+#search-bar *{
+    height:30px;
+    margin:20px 0px 10px 0px;
+    font-size: 20px;
+    
+}
+
+#search-bar input{
+    width: 40%;
+}
+#search-bar button{
+    margin:0px;
+    background-color: #022f8a;
+    width:75px;
+    height:35px;
+    margin-left:-4px;
+    /* font-size: 20px; */
+    color:white;
+    
+}
+
+h1{
+    margin:0;
+}
+
+#task-bar{
+    text-align: center;
+}
+#task-bar button{
+    margin:5px 10px 10px 20px;
+    width:10%;
+    font-size: 17px;
+    color: white;
+    font-weight: bold;
+    /* background: white; */
+    background: rgba(4, 15, 36, 0);
+    border:transparent;
+    display:inline-flex;
+    
+}
+
+/* #task-bar button:active{
+    background: rgb(16, 104, 158);
+    color:rgb(130, 5, 5);
+
+} */
+
+#output-area{
+    width:70%;
+    /* height:500px; */
+    overflow-y: auto;
+    margin:auto;
+
+}
+
+.container{
+    display: flex;
+    margin: 2px 2px;
+    flex-wrap: wrap;
+    flex-direction: row;
+    flex-basis: 0;
+    margin:auto;  
+}
+
+.item{
+    border: 2px solid gray;
+    padding:0 3px;
+    flex:1;
+    margin: 4px 2px;
+    background: #8ec3eb67;
+    max-width: 300px;
+    min-width: 180px;
+    text-align: center;
+    border-radius: 7px;
+    border-color: #8ec3eb67;
+}
+#buy-button{
+    position: relative;
+    top: auto;
+    bottom:0px;
+    border-radius: 7px;
+    border-color:antiquewhite;
+    background-color: green;
+    color:white;
+}
+
+#task-bar button:hover{
+    color:black;
+
+}
+

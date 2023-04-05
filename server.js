@@ -26,12 +26,18 @@
 const mongoose = require('mongoose');
 const express = require('express');
 const bodyParser = require("body-parser");  
+const cookieParser = require('cookie-parser');
+
 const hostname = 'localhost';
 const port = 3000;
 const app = express();
+app.use(cookieParser());
+app.use('/public_html/*', authenticate); 
 app.use(express.static('public_html'))
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
+app.use('/local-files', express.static('/'));
+
 
 // database to store all the messages
 mongoose.connect('mongodb+srv://khyokubjonov:L5E5Imuo8EWo9rzf@khojiakbardb.pfv0hgx.mongodb.net/?retryWrites=true&w=majority', {
@@ -65,7 +71,7 @@ var User = mongoose.model("User", UserSchema);
 app.listen(port, () => {
   console.log('Server has started.');
 })
-// app.get('/chats', (req, res) => {
+
 
 //  (GET) Should return a JSON array containing the information for every user in the database.
 app.get("/get/users/", (req,res) => {
@@ -96,15 +102,30 @@ app.get('/get/items/', (req, res) => {
 
 });
 
+function authenticate(req, res, next){
+  let c = req.cookies;
+  if (c && c.username){
+    let result = true;
+    if (result) {
+      next();
+      return;
+    }
+  }
+  res.redirect('/account/index.html');
+}
+
 // authenticates the user login 
 app.get('/account/login/:USERNAME/:PASSWORD', (req, res) => {
-  console.log("validating login");
+  console.log("validating login"); 
   let u = req.params.USERNAME;
   let p = req.params.PASSWORD;
   let p1 = User.find({username: u, password:p}).exec();
   p1.then((results => {
     if(results.length >0){
+      res.cookie('login', {username: u});
+      console.log(res.cookie);
       res.end('SUCCESS');
+      // res.redirect('/public_html/home.html');
     }else{
       res.end('LOGIN FAILED');
     }
@@ -153,6 +174,96 @@ app.get('/get/purchases/:USERNAME', (req, res) => {
     });
 });
 
+app.get('/get/purchases-data/:USERNAME', (req, res) => {
+  console.log("Sending all purchases for a user");
+  let name = req.params.USERNAME;
+  let p1 = User.findOne({username: name}).exec();
+  var allPurchases = [];
+  let counter = 0;
+  p1.then( (results) => { 
+    if(results === null){
+      res.status(404).send({ status: 'Not found'});
+      res.end();
+    }else{
+
+      let purchases = results.purchases;
+      
+      for(let i=0; i<purchases.length; i++){
+        let p2 = Item.findOne({_id: purchases[i]}).exec();
+        p2.then( (results) => {
+          allPurchases.push(results);
+          counter += 1; // counts the # of purchases added to the list
+          if( counter === purchases.length){
+            res.end(  JSON.stringify(allPurchases, undefined, 2) );
+          }
+
+
+        });
+        p2.catch( (error) => {
+          console.log(error);
+          res.end('FAIL');
+        });
+
+        
+        
+      }
+      
+    }
+    
+  });
+  p1.catch( (error) => {
+    console.log(error);
+    res.status(404).send({ status: 'NotOK'});
+  });
+});
+
+
+
+
+app.get('/get/listings-data/:USERNAME', (req, res) => {
+  console.log("Sending all listings for a user");
+  let name = req.params.USERNAME;
+  let p1 = User.findOne({username: name}).exec();
+  var allListings = [];
+  let counter = 0;
+  p1.then( (results) => { 
+    if(results === null){
+      res.status(404).send({ status: 'Not found'});
+      res.end();
+    }else{
+
+      let posts = results.listings;
+      
+      for(let i=0; i<posts.length; i++){
+        let p2 = Item.findOne({_id: posts[i]}).exec();
+        p2.then( (results) => {
+          allListings.push(results);
+          counter += 1; // counts the # of purchases added to the list
+          if( counter === posts.length){
+            res.end(  JSON.stringify(allListings, undefined, 2) );
+          }
+
+
+        });
+        p2.catch( (error) => {
+          console.log(error);
+          res.end('FAIL');
+        });
+
+        
+        
+      }
+      
+    }
+    
+  });
+  p1.catch( (error) => {
+    console.log(error);
+    res.status(404).send({ status: 'NotOK'});
+  });
+
+});
+
 // (GET) Should return a JSON list of every user whose username has the substring KEYWORD.
 app.get('/search/users/:KEYWORD', (req, res) => {
     console.log("Sending all matching users");
@@ -172,7 +283,8 @@ app.get('/search/items/:KEYWORD', (req, res) => {
     console.log("Sending all matching items");
     let keyword = req.params.KEYWORD;
     let p1 = Item.find({description: { $regex: keyword, $options: 'i' }}).exec();
-    p1.then( (results) => { 
+    p1.then( (results) => {
+      console.log("found matches");
       res.end( JSON.stringify(results, undefined, 2) );
     });
     p1.catch( (error) => {
@@ -263,3 +375,52 @@ app.post('/add/item/:USERNAME', (req, res) => {
     });
 
 });
+
+app.post('/purchase/item/:USERNAME', (req, res) => {
+  console.log('buying an item')
+  let username = req.params.USERNAME;
+  let purchase = req.body;
+  let purchasedItem = null;
+  try{
+    purchasedItem = JSON.parse(purchase);
+  }catch (e){
+    purchasedItem = purchase;
+  }
+  let p1 = Item.findOne({title:purchasedItem.title, description:purchasedItem.description, price:purchasedItem.price}).exec();
+  p1.then((item) => {
+    if(item === null){
+      console.log("Item to purchase not found");
+      res.status(404).send({ status: 'Item not found'});
+        res.end();
+    }else{
+      console.log("user bought an item");
+      item.stat = 'sold';
+      let p2 = item.save();
+      recordUserPurchase(username, item,req,res);
+      p2.then((doc) => {res.send('item sold')});
+    }
+  });
+});
+
+function recordUserPurchase(username, purchase,req,res){
+  let p2 = User.findOne({username: username}).exec();
+  p2.then((user) => {
+    if(user === null){
+      res.status(404).send({ status: 'Not found'});
+      res.end();
+    }else{
+      console.log('Recording a purchase for ' + username);
+      user.purchases.push(purchase._id);
+      let result = user.save();
+      result.then( (doc) => { 
+        res.end('purchase recorded');
+      });
+      result.catch( (err) => { 
+          console.log(err);
+          res.end('failed to record the purchase');
+      });
+
+    }
+
+  });
+}

@@ -54,7 +54,7 @@ button:hover{
     border-color: #a8d5e5;
 }
 
-#user-login, #create-account {
+#user-login, #create-account, #add-post{
     border: 2px solid #2596be;
     width: max-content;
     padding: 10px 20px;

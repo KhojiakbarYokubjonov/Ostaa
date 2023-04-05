@@ -3,10 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="home-style.css">
+    <script  type="text/javascript" src="client.js"></script>
+    <title>Ostaa</title>
 </head>
-<body>
-    <h1>Login Succeeded</h1>
+<body onload="updateWelcomeName()">
+    <h1 id="header">Ostaa</h1>
+    <div id="resources">
+        <h1 id="welcome">Welcome <span id="user-name-for-welcome">User</span>! What would you like to do?</h1>
+        <div id="search-bar">
+            <input type="text" placeholder="Search listing" id="search" required>
+            <button type="submit" onclick="searchListing()">Search</button>
+        </div>
+        <div id="task-bar">
+            <button type="submit" id="listings" class="activities" onclick="displayListings()">Listings</button>
+            <button type="submit" id="purchases"class="activities" onclick="displayPurchases()">Purchases</button>
+            <button type="submit" id="new-listings" class="activities" onclick="createListing()">New Listing</button>
+        </div>
+
+        
+    </div>
+    <div id="content">
+        <div id="output-area"></div>
+    </div>
+    
+    
+
+    
     
 </body>
 </html>
