@@ -57,6 +57,13 @@ function updateWelcomeName(){
 
 }
 
+function isSessionOver(){
+    if(document.cookie === ''){
+        document.getElementsByClassName("time-out")[0].innerHTML = "Session timed out";
+    }
+}
+setInterval(isSessionOver, 2000);
+
 function getCookieData()
 {
     // const cookieString = document.cookie;
@@ -177,7 +184,7 @@ function addItem(){
 
         p1.then((response) => {
             console.log(response);
-            console.log(response.text);
+            // console.log(response.text);
             window.location.href = 'http://localhost:3000/app/home.html';
         });
         p1.catch(() => { 

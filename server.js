@@ -102,11 +102,11 @@ setInterval(cleanupSessions, 2000);
 
 function authenticate(req, res, next){
   let c = req.cookies;
-  console.log("line 105, req.cookies: ");
-  console.log(c);
+  // console.log("line 105, req.cookies: ");
+  // console.log(c);
   if (c && Object.getPrototypeOf(c) !== null){
     let result = doesUserHaveSession(c.login);
-    console.log(result);
+    // console.log(result);
     if (result) {
       next();
       return;
@@ -164,7 +164,7 @@ app.get('/account/login/:USERNAME/:PASSWORD', (req, res) => {
   p1.then((results => {
     if(results.length >0){
       id = addSession(u);
-      res.cookie('login', {username: u, sid : id}, {maxAge:60000});
+      res.cookie('login', {username: u, sid : id}, {maxAge:30000});
       // res.cookie('login', {username: u});
       //send back a string with a user id (session id) - cookies, keep track of who logged in
       res.end('SUCCESS');

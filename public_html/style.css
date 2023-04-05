@@ -12,12 +12,42 @@ body{
     font-family: "Questrial", "Arial", sans-serif;
     
 }
-h1 {
-    color: blue;
+
+h1{
+    color:blue;
     margin:10px;
     margin-left:0;
     margin-top: 5px;
 }
+
+.header{
+    /* background: rgb(16, 104, 158); */
+    color:blue;
+    height:30px;
+}
+
+.header h1, p {
+    display: inline-block;
+    position:absolute;
+}
+
+.header p{
+    right:0.75%;
+    width:max-content;
+    color:red;
+    font-weight:bold;
+    background: black;
+}
+
+
+
+
+/*
+h1 {
+    color: blue;
+    
+}
+*/
 
 input, label {
     margin-bottom: 1%;

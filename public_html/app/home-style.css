@@ -3,12 +3,26 @@ body{
     font-family: "Questrial", "Arial", sans-serif;
 }
 
-#header{
+.header{
     /* width: 100%; */
     background: rgb(16, 104, 158);
-    margin:0;
+    /* margin:0; */
     color:white;
     padding: 2% 0 2% 2%;
+    height:30px;
+}
+
+.header h1, p {
+    display: inline-block;
+    position:absolute;
+}
+
+.header p{
+    right:0.75%;
+    width:max-content;
+    color:red;
+    font-weight:bold;
+    background: black;
 }
 #welcome{
     color:white;
