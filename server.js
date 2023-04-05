@@ -32,7 +32,7 @@ const hostname = 'localhost';
 const port = 3000;
 const app = express();
 app.use(cookieParser());
-app.use('/public_html/*', authenticate); 
+// app.use('/public_html/*', authenticate); 
 app.use(express.static('public_html'))
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
@@ -66,11 +66,57 @@ var Item = mongoose.model('Item', ItemSchema );
 });
 
 var User = mongoose.model("User", UserSchema);
+//  keeps track of the login sessions
+let sessions = [];
 
+function addSession(user){
+  let sessionId = Math.floor(Math.random() + 100000);
+  let sessionStart = Date.now();
+  sessions[user] = { 'sod':sessionId, 'start':sessionStart};
+  return sessionId;
+}
+
+function doesUserHaveSession(user){
+  let entry = sessions[user];
+  if (entry != undefined){
+    return entry.sid == sessionId;
+  }
+  return false;
+}
+
+const SESSION_LENGTH = 60000;
+
+function cleanupSessions () {
+  let currentTime = Date.now();
+  for (i in sessions) {
+    let sess = sessions[i];
+    if (sess.start + SESSION_LENGTH < currentTime){
+      console.log("Removing session id")
+      delete sessions[i];
+    }
+  }
+}
+
+setInterval(cleanupSessions, 2000);
+
+function authenticate(req, res, next){
+  let c = req.cookies;
+  if (c && c.username){
+    let result = doesUserHaveSession(c.login.username, c.login.sid);
+    if (result) {
+      next();
+      return;
+    }
+  }
+  res.redirect('/account/index.html');
+}
+// app.use('/app/*', authenticate);    //If authenticate fails, doesn't open everything else
+////////////////////////////////////////////////////////////
 
 app.listen(port, () => {
   console.log('Server has started.');
 })
+
 
 
 //  (GET) Should return a JSON array containing the information for every user in the database.
@@ -122,8 +168,10 @@ app.get('/account/login/:USERNAME/:PASSWORD', (req, res) => {
   let p1 = User.find({username: u, password:p}).exec();
   p1.then((results => {
     if(results.length >0){
+      // id = addSession(u);
+      // res.cookie('login', {username: u, sid : id}, {maxAge:30000});
       res.cookie('login', {username: u});
-      console.log(res.cookie);
+      //send back a string with a user id (session id) - cookies, keep track of who logged in
       res.end('SUCCESS');
       // res.redirect('/public_html/home.html');
     }else{

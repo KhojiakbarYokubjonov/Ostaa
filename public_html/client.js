@@ -37,7 +37,7 @@ function login(){
                     displayLoginIssue("Issue logging  in with that info");
                 }else{
                     console.log("SUCCESS");
-                    window.location.href = 'http://localhost:3000/home.html'  ;
+                    window.location.href = 'http://localhost:3000/app/home.html'  ;
                     
                     
                 }
@@ -163,7 +163,7 @@ function addItem(){
         p1.then((response) => {
             console.log(response);
             console.log(response.text);
-            window.location.href = 'http://localhost:3000/home.html';
+            window.location.href = 'http://localhost:3000/app/home.html';
         });
         p1.catch(() => { 
             alert('something went wrong');
@@ -320,5 +320,5 @@ function displayListings(){
 }
 
 function createListing(){
-    window.location.href = 'http://localhost:3000/new_listing.html' 
+    window.location.href = 'http://localhost:3000/app/new_listing.html' 
 }
