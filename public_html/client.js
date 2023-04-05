@@ -59,10 +59,25 @@ function updateWelcomeName(){
 
 function getCookieData()
 {
-    const cookieString = document.cookie;
-    const decodedCookieValue = decodeURIComponent(cookieString.split('=')[1]);
-    const cookieObj = JSON.parse(decodedCookieValue.replace('j:', ''));
-    return cookieObj;
+    // const cookieString = document.cookie;
+    // const decodedCookieValue = decodeURIComponent(cookieString.split('=')[1]);
+    // const cookieObj = JSON.parse(decodedCookieValue.replace('j:', ''));
+    // return cookieObj;
+
+    // decode the cookie string
+    const decodedCookie = decodeURIComponent(document.cookie);
+    
+    // extract the JSON string from the decoded cookie
+    const jsonStartIndex = decodedCookie.indexOf('{');
+    const jsonEndIndex = decodedCookie.lastIndexOf('}');
+    const jsonString = decodedCookie.slice(jsonStartIndex, jsonEndIndex + 1);
+    
+    // parse the JSON string and extract the username and sid values
+    const { username, sid } = JSON.parse(jsonString);
+    
+    // return an object with the extracted values
+    return { username, sid };
+    
 }
 
 function createAccount(){

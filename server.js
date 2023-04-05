@@ -33,6 +33,7 @@ const port = 3000;
 const app = express();
 app.use(cookieParser());
 // app.use('/public_html/*', authenticate); 
+app.use('/app/*', authenticate);    //If authenticate fails, doesn't open everything else
 app.use(express.static('public_html'))
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
@@ -72,14 +73,14 @@ let sessions = [];
 function addSession(user){
   let sessionId = Math.floor(Math.random() + 100000);
   let sessionStart = Date.now();
-  sessions[user] = { 'sod':sessionId, 'start':sessionStart};
+  sessions[user] = { 'sid':sessionId, 'start':sessionStart};
   return sessionId;
 }
 
 function doesUserHaveSession(user){
-  let entry = sessions[user];
+  let entry = sessions[user.username];
   if (entry != undefined){
-    return entry.sid == sessionId;
+    return entry.sid == user.sid;
   }
   return false;
 }
@@ -101,16 +102,20 @@ setInterval(cleanupSessions, 2000);
 
 function authenticate(req, res, next){
   let c = req.cookies;
-  if (c && c.username){
-    let result = doesUserHaveSession(c.login.username, c.login.sid);
+  console.log("line 105, req.cookies: ");
+  console.log(c);
+  if (c && Object.getPrototypeOf(c) !== null){
+    let result = doesUserHaveSession(c.login);
+    console.log(result);
     if (result) {
       next();
       return;
     }
   }
-  res.redirect('/account/index.html');
+  console.log('redirecting to login page');
+  res.redirect('/index.html');
 }
-// app.use('/app/*', authenticate);    //If authenticate fails, doesn't open everything else
+
 ////////////////////////////////////////////////////////////
 
 app.listen(port, () => {
@@ -148,17 +153,7 @@ app.get('/get/items/', (req, res) => {
 
 });
 
-function authenticate(req, res, next){
-  let c = req.cookies;
-  if (c && c.username){
-    let result = true;
-    if (result) {
-      next();
-      return;
-    }
-  }
-  res.redirect('/account/index.html');
-}
+
 
 // authenticates the user login 
 app.get('/account/login/:USERNAME/:PASSWORD', (req, res) => {
@@ -168,9 +163,9 @@ app.get('/account/login/:USERNAME/:PASSWORD', (req, res) => {
   let p1 = User.find({username: u, password:p}).exec();
   p1.then((results => {
     if(results.length >0){
-      // id = addSession(u);
-      // res.cookie('login', {username: u, sid : id}, {maxAge:30000});
-      res.cookie('login', {username: u});
+      id = addSession(u);
+      res.cookie('login', {username: u, sid : id}, {maxAge:60000});
+      // res.cookie('login', {username: u});
       //send back a string with a user id (session id) - cookies, keep track of who logged in
       res.end('SUCCESS');
       // res.redirect('/public_html/home.html');
