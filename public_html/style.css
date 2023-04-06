@@ -23,7 +23,7 @@ h1{
 .header{
     /* background: rgb(16, 104, 158); */
     color:blue;
-    height:30px;
+    /* height:30px; */
 }
 
 .header h1, p {

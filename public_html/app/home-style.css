@@ -12,12 +12,12 @@ body{
     height:30px;
 }
 
-.header h1, p {
-    display: inline-block;
+.header h1 , .header p {
+    display: inline-block; 
     position:absolute;
 }
 
-.header p{
+.header p {
     right:0.75%;
     width:max-content;
     color:red;
@@ -92,7 +92,7 @@ h1{
 } */
 
 #output-area{
-    width:70%;
+    /* width:70%; */
     /* height:500px; */
     overflow-y: auto;
     margin:auto;
@@ -120,6 +120,8 @@ h1{
     border-radius: 7px;
     border-color: #8ec3eb67;
 }
+
+
 #buy-button{
     position: relative;
     top: auto;

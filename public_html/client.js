@@ -68,7 +68,7 @@ function isSessionOver(){
         document.getElementsByClassName("time-out")[0].innerHTML = "Session timed out";
     }
 }
-// setInterval(isSessionOver, 2000);
+setInterval(isSessionOver, 2000);
 
 function getCookieData()
 {
