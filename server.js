@@ -70,6 +70,11 @@ var User = mongoose.model("User", UserSchema);
 //  keeps track of the login sessions
 let sessions = [];
 
+
+/**
+ * creates a new session when a user logs in
+ * @returns the session id used tp determine session time out
+ */
 function addSession(user){
   let sessionId = Math.floor(Math.random() + 100000);
   let sessionStart = Date.now();
@@ -77,6 +82,10 @@ function addSession(user){
   return sessionId;
 }
 
+/**
+ * checks for session time out
+ * @returns boolean value
+ */
 function doesUserHaveSession(user){
   let entry = sessions[user.username];
   if (entry != undefined){
@@ -87,6 +96,9 @@ function doesUserHaveSession(user){
 
 const SESSION_LENGTH = 60000;
 
+/**
+ * cleans up user session causing session time out
+ */
 function cleanupSessions () {
   let currentTime = Date.now();
   for (i in sessions) {
@@ -97,13 +109,16 @@ function cleanupSessions () {
     }
   }
 }
-
+// checks for session time every 2 seconds
 setInterval(cleanupSessions, 2000);
 
+/**
+ * checks if user has session time when he/she tries to access a web page
+ * takes the user to login page if their session is over.
+ * @returns 
+ */
 function authenticate(req, res, next){
   let c = req.cookies;
-  // console.log("line 105, req.cookies: ");
-  // console.log(c);
   if (c && Object.getPrototypeOf(c) !== null){
     let result = doesUserHaveSession(c.login);
     // console.log(result);
@@ -164,7 +179,7 @@ app.get('/account/login/:USERNAME/:PASSWORD', (req, res) => {
   p1.then((results => {
     if(results.length >0){
       id = addSession(u);
-      res.cookie('login', {username: u, sid : id}, {maxAge:30000});
+      res.cookie('login', {username: u, sid : id}, {maxAge:60000});
       // res.cookie('login', {username: u});
       //send back a string with a user id (session id) - cookies, keep track of who logged in
       res.end('SUCCESS');
@@ -217,6 +232,7 @@ app.get('/get/purchases/:USERNAME', (req, res) => {
     });
 });
 
+// sends all purchase data for a user
 app.get('/get/purchases-data/:USERNAME', (req, res) => {
   console.log("Sending all purchases for a user");
   let name = req.params.USERNAME;
@@ -262,7 +278,7 @@ app.get('/get/purchases-data/:USERNAME', (req, res) => {
 
 
 
-
+// sends all the postings for a user
 app.get('/get/listings-data/:USERNAME', (req, res) => {
   console.log("Sending all listings for a user");
   let name = req.params.USERNAME;
@@ -351,21 +367,21 @@ app.post('/add/user/', (req, res) => {
   }
   
   let p3 = User.find({username: userData.username, password: userData.password}).exec();
-p3.then((results) => {
-  console.log(results);
-  if(results.length ==0){
-    let newUser = new User(newUserToSave);
-    let p1 = newUser.save();
-    p1.then( (doc) => { 
-      res.end('SAVED SUCCESFULLY');
-    });
-    p1.catch( (err) => { 
-      console.log(err);
-      res.end('FAIL');
-    });
-  }else{
-    res.end("Invalid credentials");
-  }
+  p3.then((results) => {
+    console.log(results);
+    if(results.length ==0){
+      let newUser = new User(newUserToSave);
+      let p1 = newUser.save();
+      p1.then( (doc) => { 
+        res.end('SAVED SUCCESFULLY');
+      });
+      p1.catch( (err) => { 
+        console.log(err);
+        res.end('FAIL');
+      });
+    }else{
+      res.end("Invalid credentials");
+    }
 })
   
   
@@ -419,6 +435,7 @@ app.post('/add/item/:USERNAME', (req, res) => {
 
 });
 
+// sends detailed purchase data to the client.
 app.post('/purchase/item/:USERNAME', (req, res) => {
   console.log('buying an item')
   let username = req.params.USERNAME;
@@ -445,6 +462,7 @@ app.post('/purchase/item/:USERNAME', (req, res) => {
   });
 });
 
+// updates the data base with the purchase. Changes the purchases item status to sold
 function recordUserPurchase(username, purchase,req,res){
   let p2 = User.findOne({username: username}).exec();
   p2.then((user) => {

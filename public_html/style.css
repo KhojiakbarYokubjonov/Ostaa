@@ -1,8 +1,8 @@
 /**
 author: Khojiakbar Yokubjonov
  *  date: 3/26/2023
- *  description: this file adds a few CSS style rules to the web page of 
-    an online-marketplace app called Ostaa.
+ *  description: this file adds a few CSS style rules to the web pages  of 
+    an online-marketplace app called Ostaa (for login and new listing pages).
 */
 body{
     margin: 0;
@@ -26,9 +26,9 @@ h1{
     /* height:30px; */
 }
 
-.header h1, p {
+.header h1, .header p {
     display: inline-block;
-    position:absolute;
+    
 }
 
 .header p{
@@ -37,6 +37,7 @@ h1{
     color:red;
     font-weight:bold;
     background: black;
+    position:absolute;
 }
 
 

@@ -1,16 +1,22 @@
+<!--
+    author: Khojiakbar Yokubjonov
+ *  date: 4/5/2023
+ *  description: this file implements the wep page structure for the home page (home.html)
+    on the online-marketplace app called Ostaa. 
+-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="home-style.css">
-    <script  type="text/javascript" src="../client.js"></script>
+    <script  src="../client.js"></script>
     <title>Ostaa</title>
 </head>
 <body onload="updateWelcomeName()">
     <div class="header">
         <h1>Ostaa</h1>
-        <p class="time-out">placeholder</p>
+        <p class="time-out"></p>
     </div>
    
     <div id="resources">
@@ -21,19 +27,12 @@
         </div>
         <div id="task-bar">
             <button type="submit" id="listings" class="activities" onclick="displayListings()">Listings</button>
-            <button type="submit" id="purchases"class="activities" onclick="displayPurchases()">Purchases</button>
+            <button type="submit" id="purchases" class="activities" onclick="displayPurchases()">Purchases</button>
             <button type="submit" id="new-listings" class="activities" onclick="createListing()">New Listing</button>
         </div>
-
-        
     </div>
     <div id="content">
         <div id="output-area"></div>
     </div>
-    
-    
-
-    
-    
 </body>
 </html>

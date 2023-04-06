@@ -5,7 +5,8 @@
  *  description: this file implements the client side of an online-marketplace app called Ostaa.
  *  Right now, it allows for adding new users and new items (for particular users) to the database.
  */
-const hostname = 'localhost';
+const hostname11 = '204.48.28.205';
+const hostname = 'localhost'
 const port = 3000;
 
 
@@ -56,13 +57,14 @@ function login(){
         
     }
 }
-
+// Adds the username to the Welcome message at the top of the web page
 function updateWelcomeName(){
     
     document.getElementById('user-name-for-welcome').innerText = getCookieData().username;
 
 }
 
+// checks for the session time out
 function isSessionOver(){
     if(document.cookie === ''){
         document.getElementsByClassName("time-out")[0].innerHTML = "Session timed out";
@@ -70,12 +72,10 @@ function isSessionOver(){
 }
 setInterval(isSessionOver, 2000);
 
+
+// extracts user data from the cookie
 function getCookieData()
 {
-    // const cookieString = document.cookie;
-    // const decodedCookieValue = decodeURIComponent(cookieString.split('=')[1]);
-    // const cookieObj = JSON.parse(decodedCookieValue.replace('j:', ''));
-    // return cookieObj;
 
     // decode the cookie string
     const decodedCookie = decodeURIComponent(document.cookie);
@@ -93,6 +93,8 @@ function getCookieData()
     
 }
 
+
+// sends a request to the server to create an account
 function createAccount(){
     const xhr = new XMLHttpRequest();
     let url = '/account/create/'
@@ -121,10 +123,12 @@ function createAccount(){
         
     }
 }
+
+// display message for invalid login credentials
 function displayLoginIssue(message){
     document.getElementById("login-res").innerText = message;
 }
-
+// display message for invalid login credentials - when they don't match existing credentials
 function displayInvalidAccount(message){
     document.getElementById("new-accoun-issue").innerText = message;
 }
@@ -200,7 +204,7 @@ function addItem(){
     
 
 }
-
+// handles the search bar on the home web page.
 function searchListing(){
     let s = document.getElementById('search').value;
     console.log(s);
@@ -261,7 +265,7 @@ function searchListing(){
 };
 }
 
-
+// manages user purchases
 function buyItem(item){
     let cookieObj = getCookieData();
     let user = cookieObj.username;
@@ -279,6 +283,7 @@ function buyItem(item){
     });
 }
 
+// displays the purchase data for a user
 function displayPurchases(){
     // document.getElementById('purchases').style.color = 'black';
     // document.getElementById('listings').style.color = 'white';
@@ -313,7 +318,7 @@ function displayPurchases(){
         }
     }
 }
-
+// displays the postings for a user
 function displayListings(){
     let cookieObj = getCookieData()
     let url = '/get/listings-data/'+ cookieObj.username;
@@ -347,6 +352,7 @@ function displayListings(){
 
 }
 
+// takes the user to another web page when he/she tries to create a new listing
 function createListing(){
     window.location.href = 'http://' + hostname +':3000/app/new_listing.html' 
 }
