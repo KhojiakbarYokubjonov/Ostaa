@@ -5,7 +5,7 @@
  *  description: this file implements the client side of an online-marketplace app called Ostaa.
  *  Right now, it allows for adding new users and new items (for particular users) to the database.
  */
-const hostname = 'localhost';
+const hostname = '204.48.28.205';
 const port = 3000;
 
 
@@ -19,34 +19,40 @@ const port = 3000;
 var userName;
 function login(){
     displayLoginIssue(null);
-    const xhr = new XMLHttpRequest();
-    let url = 'http://' + hostname + ':' + port + '/account/login/'
+    
+    let url =  '/account/login/'
     userName = document.getElementById('username').value;
     let ps = document.getElementById('password').value;
     console.log(userName + " " +  ps);
     if(userName !=="" && ps !== ""){
          url += userName + '/' + ps + '/';
-        xhr.open('GET', url);
-        xhr.send();
-        xhr.onreadystatechange = function() {
-        if (xhr.readyState === XMLHttpRequest.DONE) {
-            if( xhr.status == 200){
-                // console.log('Inside client: '+ xhr.responseText);
-                if(xhr.responseText === "LOGIN FAILED"){
-
-                    displayLoginIssue("Issue logging  in with that info");
+        try{
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', url);
+            xhr.send();
+            xhr.onreadystatechange = function() {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if( xhr.status == 200){
+                    // console.log('Inside client: '+ xhr.responseText);
+                    if(xhr.responseText === "LOGIN FAILED"){
+    
+                        displayLoginIssue("Issue logging  in with that info");
+                    }else{
+                        console.log("SUCCESS");
+                        window.location.href = 'http://204.48.28.205:3000/app/home.html'  ;
+                        
+                        
+                    }
                 }else{
-                    console.log("SUCCESS");
-                    window.location.href = 'http://localhost:3000/app/home.html'  ;
-                    
-                    
+                    console.log('smth went wrong');
                 }
-            }else{
-                console.log('smth went wrong');
+                
             }
-            
+        };
+        }catch(e){
+            console.log('catch', e);
         }
-    };
+       
         
     }
 }
@@ -62,7 +68,7 @@ function isSessionOver(){
         document.getElementsByClassName("time-out")[0].innerHTML = "Session timed out";
     }
 }
-setInterval(isSessionOver, 2000);
+// setInterval(isSessionOver, 2000);
 
 function getCookieData()
 {
@@ -89,7 +95,7 @@ function getCookieData()
 
 function createAccount(){
     const xhr = new XMLHttpRequest();
-    let url = 'http://' + hostname + ':' + port + '/account/create/'
+    let url = '/account/create/'
     let u = document.getElementById('username').value;
     let ps = document.getElementById('password').value;
     console.log(u + " " +  ps);
@@ -185,7 +191,7 @@ function addItem(){
         p1.then((response) => {
             console.log(response);
             // console.log(response.text);
-            window.location.href = 'http://localhost:3000/app/home.html';
+            window.location.href = 'http://204.48.28.205:3000/app/home.html';
         });
         p1.catch(() => { 
             alert('something went wrong');
@@ -342,5 +348,5 @@ function displayListings(){
 }
 
 function createListing(){
-    window.location.href = 'http://localhost:3000/app/new_listing.html' 
+    window.location.href = 'http://204.48.28.205:3000/app/new_listing.html' 
 }
