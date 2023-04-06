@@ -5,7 +5,7 @@
  *  description: this file implements the client side of an online-marketplace app called Ostaa.
  *  Right now, it allows for adding new users and new items (for particular users) to the database.
  */
-const hostname = '204.48.28.205';
+const hostname = 'localhost';
 const port = 3000;
 
 
@@ -39,7 +39,7 @@ function login(){
                         displayLoginIssue("Issue logging  in with that info");
                     }else{
                         console.log("SUCCESS");
-                        window.location.href = 'http://204.48.28.205:3000/app/home.html'  ;
+                        window.location.href = 'http://' + hostname +':3000/app/home.html'  ;
                         
                         
                     }
@@ -191,7 +191,7 @@ function addItem(){
         p1.then((response) => {
             console.log(response);
             // console.log(response.text);
-            window.location.href = 'http://204.48.28.205:3000/app/home.html';
+            window.location.href = 'http://' + hostname +':3000/app/home.html';
         });
         p1.catch(() => { 
             alert('something went wrong');
@@ -348,5 +348,5 @@ function displayListings(){
 }
 
 function createListing(){
-    window.location.href = 'http://204.48.28.205:3000/app/new_listing.html' 
+    window.location.href = 'http://' + hostname +':3000/app/new_listing.html' 
 }
