@@ -1,2 +1,2 @@
 # Ostaa
-simple online marketplace app
+A simple web-based online marketplace app
