@@ -134,7 +134,10 @@ function displayInvalidAccount(message){
 }
 
 
-
+/**
+ * creates a new user account
+ * sends new user credentials to the server to store
+ */
 function addUser(){
     displayInvalidAccount(null);
     let u = document.getElementById('new-username').value;

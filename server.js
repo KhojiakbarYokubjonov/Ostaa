@@ -39,13 +39,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
 app.use('/local-files', express.static('/'));
 
-
-// database to store all the messages
-mongoose.connect('mongodb+srv://khyokubjonov:L5E5Imuo8EWo9rzf@khojiakbardb.pfv0hgx.mongodb.net/?retryWrites=true&w=majority', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-}).then(() => console.log('MongoDB connected...'))
-    .catch((err) => console.log(err));
 var Schema = mongoose.Schema;
 
 // Items
@@ -382,11 +375,7 @@ app.post('/add/user/', (req, res) => {
     }else{
       res.end("Invalid credentials");
     }
-})
-  
-  
-  
-
+  })
 })
 
 
